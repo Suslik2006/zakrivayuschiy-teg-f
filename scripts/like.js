@@ -1,41 +1,50 @@
-/* этот скрипт использует такие имена классов:
-✦ like-icon — для svg-иконки анимированного сердца
-✦ card__like-button — для кнопки Like рядом с иконкой
-✦ card__icon-button — для кнопки, оборачивающей иконку
-✦ card__icon-button — для кнопки, оборачивающей иконку
-✦ is-liked — для обозначения состояния лайкнутой иконки в виде сердца
-✦ button__text — для обозначения текстового элемента внутри кнопки
-Если эти классы поменять в HTML, скрипт перестанет работать. Будьте аккуратны.
-*/
+document.querySelectorAll('.card').forEach((card) => {
+  const heart = card.querySelector('.like-icon');
+  const likeButton = card.querySelector('.card__like-button');
+  const iconButton = card.querySelector('.card__icon-button');
+  const buttonText = likeButton.querySelector('.button__text');
 
-const likeHeartArray = document.querySelectorAll('.like-icon');
-const likeButtonArray = document.querySelectorAll('.card__like-button');
-const iconButtonArray = document.querySelectorAll('.card__icon-button');
+  let hoverTimer;
+  let textTimer;
 
-iconButtonArray.forEach((iconButton, index) => {
-  iconButton.onclick = () =>
-    toggleIsLiked(likeHeartArray[index], likeButtonArray[index]);
-});
+  function cancelHoverTimer() {
+    clearTimeout(hoverTimer);
+  }
 
-likeButtonArray.forEach((button, index) => {
-  button.onclick = () => toggleIsLiked(likeHeartArray[index], button);
-});
+  function setLiked(isLiked) {
+    heart.classList.toggle('is-liked', isLiked);
 
-function toggleIsLiked(heart, button) {
-  heart.classList.toggle('is-liked');
-  setButtonText(heart, button);
-}
+    clearTimeout(textTimer);
+    textTimer = setTimeout(() => {
+      buttonText.textContent = isLiked ? 'Unlike' : 'Like';
+    }, 500);
 
-function setButtonText(heart, button) {
-  if ([...heart.classList].includes('is-liked')) {
-    setTimeout(
-      () => (button.querySelector('.button__text').textContent = 'Unlike'),
-      500
-    );
-  } else {
-    setTimeout(
-      () => (button.querySelector('.button__text').textContent = 'Like'),
-      500
+    iconButton.setAttribute(
+      'aria-label',
+      isLiked ? 'Убрать лайк' : 'Поставить лайк'
     );
   }
-}
+
+  function startHoverTimer() {
+    cancelHoverTimer();
+
+    if (heart.classList.contains('is-liked')) {
+      return;
+    }
+
+    hoverTimer = setTimeout(() => {
+      setLiked(true);
+    }, 2000);
+  }
+
+  function handleClick() {
+    cancelHoverTimer();
+    setLiked(!heart.classList.contains('is-liked'));
+  }
+
+  [iconButton, likeButton].forEach((button) => {
+    button.addEventListener('mouseenter', startHoverTimer);
+    button.addEventListener('mouseleave', cancelHoverTimer);
+    button.addEventListener('click', handleClick);
+  });
+});
