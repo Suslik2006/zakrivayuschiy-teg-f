@@ -1,3 +1,4 @@
+
 .page {
   font-family: var(--font-main), sans-serif;
   font-variation-settings: "wght" var(--card-text-weight);
@@ -8,21 +9,10 @@
   background-color: #fff;
   padding-block-start: 100px;
   padding-block-end: 100px;
-}
-
-
-.page::before {
-  content: "";
-  position: absolute;
-  inset-block-start: 0;
-  inset-inline: 0;
-  block-size: calc(100dvb + 100px);
-  z-index: -1;
-  pointer-events: none;
-
   background-image: var(--page-background);
   background-size: 4px 4px, 4px 4px, cover;
   background-repeat: repeat, repeat, no-repeat;
+  background-attachment: fixed;
 }
 
 .content-width {
@@ -37,7 +27,7 @@
   text-align: center;
   background-color: #fff;
   border: 2px solid #000;
-  margin-block-start: 0px;
+  margin-block-start: 0;
   margin-inline: auto;
 }
 
@@ -59,6 +49,10 @@
   text-transform: uppercase;
 }
 
+.main {
+  margin-block-start: 98px;
+}
+
 .card {
   background-color: #fff;
   border: 2px solid #000;
@@ -77,10 +71,6 @@
   padding-inline: 10px;
 }
 
-.main {
-  margin-block-start: 98px;
-}
-
 .card__image-wrapper {
   position: relative;
 }
@@ -88,23 +78,73 @@
 .card__image {
   display: block;
   inline-size: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  object-position: center;
+}
+
+.filter-none {
+  filter: none;
+}
+
+.filter-grayscale {
+  filter: grayscale(0.75);
+}
+
+.filter-saturate {
+  filter: saturate(2.2);
+}
+
+.filter-hue-rotate {
+  filter: hue-rotate(30deg);
+}
+
+.filter-invert {
+  filter: invert(1) hue-rotate(180deg) brightness(1.5) contrast(0.7);
+}
+
+.filter-sepia {
+  filter: sepia(1);
+}
+
+.filter-blur {
+  filter: blur(10px);
+}
+
+.filter-hue-contrast-blur {
+  filter: contrast(1.05);
 }
 
 .card__label {
   position: absolute;
   inset-block-start: 25px;
   inset-inline-end: 25px;
-
   font-family: var(--font-accent), fantasy;
   font-size: 14px;
   opacity: 0.5;
   mix-blend-mode: hard-light;
-
   text-shadow:
-  -1px 0 var(--label-stroke-color),
-  1px 0 var(--label-stroke-color),
-  0 -1px var(--label-stroke-color),
-  0 1px var(--label-stroke-color);
+    -1px 0 var(--label-stroke-color),
+    1px 0 var(--label-stroke-color),
+    0 -1px var(--label-stroke-color),
+    0 1px var(--label-stroke-color);
+}
+
+.card__content {
+  padding: 25px;
+}
+
+.card__text {
+  margin: 0;
+  font-family: var(--font-main), sans-serif;
+  font-size: 18px;
+  font-weight: 400;
+  font-variation-settings: "wght" 400;
+  line-height: 21px;
+}
+
+.card__text + .card__text {
+  margin-block-start: 25px;
 }
 
 .card__actions {
@@ -119,15 +159,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-
+  box-sizing: border-box;
   inline-size: 39px;
   block-size: 38px;
   padding: 0;
-  border: none;
+  border: 2px solid transparent;
   background-color: transparent;
   cursor: pointer;
-  box-sizing: border-box;
-  border: 2px solid transparent;
   transition: border-color 0.3s ease;
 }
 
@@ -139,39 +177,64 @@
   border-color: var(--accent-color);
 }
 
-.card__like-button {
-  box-sizing: border-box;
-  inline-size: 130px;
-  block-size: 38px;
-  padding: 0;
-  border: 2px solid #000;
-  background-color: #fff;
-  font-family: var(--font-accent), fantasy;
-  font-size: 14px;
-  cursor: pointer;
-}
-
-.card__content {
-  padding: 25px;
-}
-
-.card__text {
-  margin: 0;
-}
-
-.card__text + .card__text {
-  margin-block-start: 25px;
-}
-
-.card__like-button,
-.save-button,
-.save-dialog__button {
+.button {
+  position: relative;
+  isolation: isolate;
   border: 2px solid #000;
   background-color: #fff;
   color: #000;
   font-family: var(--font-accent), fantasy;
   font-size: 14px;
   cursor: pointer;
+  transition: box-shadow 0.3s ease;
+}
+
+.button:focus {
+  outline: none;
+  box-shadow: 2px 2px 0 var(--accent-color);
+}
+
+.button::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-color: var(--accent-color);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.5s ease-in-out;
+}
+
+.button:hover::before {
+  transform: scaleX(1);
+}
+
+.button__text {
+  position: relative;
+  z-index: 1;
+  color: var(--button-text-color);
+  mix-blend-mode: difference;
+}
+
+.card__like-button {
+  box-sizing: border-box;
+  inline-size: 130px;
+  block-size: 38px;
+  padding: 0;
+}
+
+.like-icon .main-body,
+.like-icon .core {
+  fill: transparent;
+}
+
+.like-icon .sparks {
+  opacity: 0;
+}
+
+.like-icon:hover .core,
+.like-icon:hover .main-body {
+  fill: #000;
 }
 
 .save-button {
@@ -180,7 +243,14 @@
   justify-content: center;
   gap: 8px;
   margin-inline: auto;
-  padding: 15px 20px;
+  padding: 15px 15px;
+}
+
+.save-button > svg {
+  position: relative;
+  z-index: 1;
+  color: var(--button-text-color);
+  mix-blend-mode: difference;
 }
 
 .save-dialog {
@@ -223,78 +293,6 @@
   text-transform: uppercase;
 }
 
-.card__like-button:focus,
-.save-button:focus,
-.save-dialog__button:focus {
-  outline: none;
-  box-shadow: 2px 2px 0 var(--accent-color);
-}
-
-.card__like-button,
-.save-button,
-.save-dialog__button {
-  transition: box-shadow 0.3s ease;
-}
-
-.like-icon .main-body,
-.like-icon .core {
-  fill: transparent;
-}
-
-.like-icon .sparks {
-  opacity: 0;
-}
-
-.like-icon:hover .core,
-.like-icon:hover .main-body {
-  fill: #000;
-}
-
-.card__like-button,
-.save-button,
-.save-dialog__button {
-  position: relative;
-  isolation: isolate;
-}
-
-.card__like-button::before,
-.save-button::before,
-.save-dialog__button::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background-color: var(--accent-color);
-
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 0.5s ease-in-out;
-}
-
-.card__like-button:hover::before,
-.save-button:hover::before,
-.save-dialog__button:hover::before {
-  transform: scaleX(1);
-}
-
-.button__text {
-  position: relative;
-  z-index: 1;
-  color: var(--button-text-color);
-  mix-blend-mode: difference;
-}
-
-.save-button > svg {
-  position: relative;
-  z-index: 1;
-  color: var(--button-text-color);
-  mix-blend-mode: difference;
-}
-
-.like-icon .sparks {
-  opacity: 0;
-}
-
 @supports (-webkit-text-stroke: 1px #fff) {
   .card__label {
     -webkit-text-stroke: 1px var(--label-stroke-color);
@@ -306,12 +304,9 @@
   .card__label {
     inset-inline-end: 11px;
   }
-  
+
   .save-button {
-    display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 8px;
   }
 
   .save-button > svg {
