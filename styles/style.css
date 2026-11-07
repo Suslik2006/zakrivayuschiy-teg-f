@@ -134,7 +134,6 @@
 
 .card__content {
   padding: 25px;
-  padding-block-start: 26px;
 }
 
 .card__text {
@@ -147,7 +146,7 @@
 }
 
 .card__text + .card__text {
-  margin-block-start: 27px;
+  margin-block-start: 25px;
 }
 
 .card__actions {
