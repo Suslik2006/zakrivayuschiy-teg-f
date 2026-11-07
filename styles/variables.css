@@ -26,7 +26,7 @@
   --content-width: clamp(
     375px,
     calc(260.5634px + 30.5164vw),
-    700px
+    702px
   );
 
   --header-padding: clamp(

@@ -46,7 +46,7 @@
   font-family: var(--font-accent), fantasy;
   font-size: var(--header-title-size);
   font-weight: 400;
-  line-height: 1;
+  line-height: auto;
   text-transform: uppercase;
 }
 
@@ -134,7 +134,7 @@
 
 .card__content {
   padding: 25px;
-  padding-block-start: 26px;
+  padding-block-start: 25px;
 }
 
 .card__text {
@@ -147,7 +147,7 @@
 }
 
 .card__text + .card__text {
-  margin-block-start: 27px;
+  margin-block-start: 25px;
 }
 
 .card__actions {
